@@ -5,6 +5,7 @@ Bundle-SymbolicName: cafeGraphSHARK
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Software Engineering for Distributed Systems Group
 Automatic-Module-Name: cafeGraphSHARK
+Main-Class: cafeGraphSHARK.CafeGraphApp
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: commonSHARK
 Import-Package: ch.qos.logback.classic,
