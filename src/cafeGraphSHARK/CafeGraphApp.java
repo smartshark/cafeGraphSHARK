@@ -44,8 +44,10 @@ public class CafeGraphApp {
 
 	public static void main(String[] args) {
 		//load configuration -> override parameters
-		args = CafeGraphConfigurationHandler.getInstance().loadConfiguration("properties/sample");
-
+		if (args.length == 1) {
+			args = CafeGraphConfigurationHandler.getInstance().loadConfiguration("properties/sample");
+		}
+		
 		CafeGraphParameter.getInstance().init(args);
 		CafeGraphConfigurationHandler.getInstance().setLogLevel(CafeGraphParameter.getInstance().getDebugLevel());
 		
