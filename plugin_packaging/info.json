@@ -50,7 +50,7 @@
         {
             "name": "merges",
             "required": false,
-            "position": 14,
+            "position": 3,
             "type": "execute",
             "description": "process merge commits (not recommended)"
         },
