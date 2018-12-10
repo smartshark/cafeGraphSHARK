@@ -1,0 +1,96 @@
+{
+"collections":[  
+      {  
+         "fields":[  
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"OID",
+               "field_name":"_id",
+               "desc": "Identifier of the document."
+            },
+            {  
+               "type":"StringType",
+               "logical_type":"AbstractionLevel",
+               "field_name":"type",
+               "desc": "Abstraction level of the state and the corresponding entity (project -> commit, file -> file_action, method -> code entity state, etc.)"
+            },
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"RID",
+               "reference_to": ["commit", "file_action", "code_entity_state"],
+               "field_name":"entity_id",
+               "desc": "ObjectID of the corresponding entity (Commit, FileAction, CodeEntityState, etc.)."
+            },
+            {  
+               "type":"ObjectIdType",
+               "logical_type":"RID",
+               "reference_to": "cfa_state",
+               "field_name":"parent_id",
+               "desc": "ObjectID of the parent state (empty for project states)."
+            },
+            {  
+               "sub_type":"ObjectIdType",
+               "type":"ArrayType",
+               "logical_type":"RID",
+               "reference_to": "cfa_state",
+               "field_name":"children_ids",
+               "desc": "List of ObjectIDs of the children states."
+            },
+            {  
+               "sub_type":"ObjectIdType",
+               "type":"ArrayType",
+               "logical_type":"RID",
+               "reference_to": "cfa_state",
+               "field_name":"causes_ids",
+               "desc": "List of ObjectIDs of the caused states, in which fixing changes are performed in the future."
+            },
+            {  
+               "sub_type":"ObjectIdType",
+               "type":"ArrayType",
+               "logical_type":"RID",
+               "reference_to": "cfa_state",
+               "field_name":"fixes_ids",
+               "desc": "List of ObjectIDs of the fixed states, which caused the changes in the state in the past."
+            },
+            {  
+               "type":"StructType",
+               "logical_type":"nested",
+               "field_name":"factors",
+               "desc": "A map of names to corresponding ObjectIDs where the factor-related data is stored (may be moved to cafeFactorSHARK as it is not used within cafeGraphSHARK)."
+               "fields": [
+                     {
+                       "type":"ObjectIdType",
+                       "logical_type":"RID",
+                       "reference_to": "cfa_factor",
+                       "field_name":"default",
+                       "desc": "ObjectID of the corresponding factor."
+                    },
+                    {
+                       "type":"ObjectIdType",
+                       "logical_type":"RID",
+                       "reference_to": "cfa_factor",
+                       "field_name":"fix",
+                       "desc": "ObjectID of the corresponding factor."
+                    },
+                    {
+                       "type":"ObjectIdType",
+                       "logical_type":"RID",
+                       "reference_to": "cfa_factor",
+                       "field_name":"adjustedszz_bugfix",
+                       "desc": "ObjectID of the corresponding factor."
+                    },
+                    {
+                       "type":"ObjectIdType",
+                       "logical_type":"RID",
+                       "reference_to": "cfa_factor",
+                       "field_name":"refactoring_codebased",
+                       "desc": "ObjectID of the corresponding factor."
+                    }
+               ]
+            }
+         ],
+         "desc": "Stores multi-layer cause-fix relationships between states at project (commit), file (file action), and logical (method) layers. For each state, parent and children relations are stored for affected entities. For each state the relations to causing and fixing and fixing states are stored.",
+         "collection_name":"cfa_state"
+      }
+   ]
+}
