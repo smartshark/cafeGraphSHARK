@@ -1,0 +1,63 @@
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.3"
+    }
+}
+ 
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+ 
+jar {
+    manifest {
+        def manif = "${projectDir}/META-INF/MANIFEST.MF"
+        if (new File(manif).exists()) {                
+            from (manif) {
+                eachEntry { details ->               
+                    if (details.key == 'Bundle-Vendor') {
+                        //Overwrite if desired
+                        //details.value = 'xyz GmbH' 
+                    }
+                }
+            }                                    
+        }
+        else {
+            logger.info(project.name + " doesn't have a META-INF/MANIFEST.MF.")  
+//            manifest.attributes provider: 'xyz GmbH'
+//            manifest.attributes project: project.name
+//            manifest.attributes Build: new Date()
+//            manifest.attributes Main-Class: new Date()
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project('commonSHARK')
+    compile fileTree(dir: 'lib', include: '*.jar')
+}
+
+mainClassName = 'cafeGraphSHARK.CafeGraphApp'
+version = '1.0.1'
+
+shadowJar {
+    configurations = [project.configurations.compile]
+    archiveName = "humbleSHARK-${version}.${extension}"
+}
