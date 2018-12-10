@@ -56,7 +56,7 @@
                "type":"StructType",
                "logical_type":"nested",
                "field_name":"factors",
-               "desc": "A map of names to corresponding ObjectIDs where the factor-related data is stored (may be moved to cafeFactorSHARK as it is not used within cafeGraphSHARK)."
+               "desc": "A map of names to corresponding ObjectIDs where the factor-related data is stored (may be moved to cafeFactorSHARK as it is not used within cafeGraphSHARK).",
                "fields": [
                      {
                        "type":"ObjectIdType",
@@ -90,7 +90,7 @@
             }
          ],
          "desc": "Stores multi-layer cause-fix relationships between states at project (commit), file (file action), and logical (method) layers. For each state, parent and children relations are stored for affected entities. For each state the relations to causing and fixing and fixing states are stored.",
-         "collection_name":"cfa_state"
+         "collection_name": "cfa_state"
       }
    ]
 }
