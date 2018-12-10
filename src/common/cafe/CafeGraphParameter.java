@@ -18,7 +18,7 @@ public class CafeGraphParameter extends Parameter {
 		if (instance == null) {
 			instance = new CafeGraphParameter();
 		    instance.setOptionsHandler(new CafeGraphOptionHandler());
-		    instance.setToolname("cafeSHARK");
+		    instance.setToolname("cafeGraphSHARK");
 		}
 		return instance;
 	}	
