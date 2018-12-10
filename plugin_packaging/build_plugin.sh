@@ -8,7 +8,7 @@ mkdir -p $TARGET
 mkdir -p $TARGET/build/
 mkdir -p $TARGET/${TOOL}/
 cp -R ../src $TARGET/${TOOL}/
-cp -R ../lib $TARGET/${TOOL}/
+#cp -R ../lib $TARGET/${TOOL}/
 cp -R ../gradle* $TARGET/${TOOL}/
 cp ../build.gradle $TARGET/${TOOL}/
 cp ../settings.gradle $TARGET/${TOOL}/
@@ -21,4 +21,4 @@ cp ../../commonSHARK/build.gradle $TARGET/commonSHARK/
 cp * $TARGET/
 cd $TARGET
 
-tar -cvf "$current/$TOOL_plugin.tar" --exclude=*.tar --exclude=build_plugin.sh *
+tar -cvf "$current/${TOOL}_plugin.tar" --exclude=*.tar --exclude=build_plugin.sh *
