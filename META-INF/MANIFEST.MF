@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: cafeGraphSHARK
+Bundle-SymbolicName: cafeGraphSHARK
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Software Engineering for Distributed Systems Group
+Automatic-Module-Name: cafeGraphSHARK
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: commonSHARK
+Import-Package: ch.qos.logback.classic,
+ ch.qos.logback.core,
+ com.mongodb,
+ org.bson,
+ org.mongodb.morphia,
+ org.slf4j
