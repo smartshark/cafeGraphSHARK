@@ -89,6 +89,10 @@ public class CafeGraphApp {
 	
 	public void processCommit(Commit commit) {
         logger.info(commit.getRevisionHash().substring(0, 8) + " " + commit.getAuthorDate());
+
+        if (commit.getParents() == null) {
+        	commit.setParents(new ArrayList<>());
+        }
         
         List<FileAction> actions = adapter.getActions(commit);
 
@@ -180,7 +184,7 @@ public class CafeGraphApp {
 		//      -> causes may be in a different artifact state 
 
 		List<String> parentHashes = adapter.getCommit(a.getCommitId()).getParents();
-		if (parentHashes.size()!=1) {
+		if (parentHashes.size()>1) {
 			//TODO: merges?
 			return;
 		}
