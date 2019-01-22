@@ -11,6 +11,7 @@ import org.mongodb.morphia.query.Query;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
+import common.HunkSignatureHandler;
 import common.MongoAdapter;
 import common.cafe.CafeGraphConfigurationHandler;
 import common.cafe.CafeGraphParameter;
