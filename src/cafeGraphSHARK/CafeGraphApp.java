@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
 import org.slf4j.LoggerFactory;
@@ -135,34 +136,30 @@ public class CafeGraphApp {
 	}
 
 	private void processProjectLevel(FileAction a, List<Hunk> hunks) {
-        CFAState pState = adapter.getCFAStateForEntity(a.getCommitId());
-        if (pState == null) {
-        	pState = new CFAState();
-        	pState.setType("project");
-        	pState.setEntityId(a.getCommitId());
-        	adapter.saveCFAState(pState);
-        }
+        CFAState pState = getProjectCFAState(a.getCommitId());
 
         for (Hunk h : hunks) {
 			for (HunkBlameLine hbl : adapter.getHunkBlameLines(h)) {
-				CFAState pCause = adapter.getCFAStateForEntity(hbl.getBlamedCommitId());
+				CFAState pCause = getProjectCFAState(hbl.getBlamedCommitId());
 				pState.getFixesIds().add(pCause.getId());
 				pCause.getCausesIds().add(pState.getId());
 			}
         }
 	}
 
-	private void processFileLevel(FileAction a, List<Hunk> hunks) {
-        CFAState fState = adapter.getCFAStateForEntity(a.getId());
-        if (fState == null) {
-        	CFAState pState = adapter.getCFAStateForEntity(a.getCommitId());
-        	fState = new CFAState();
-            fState.setType("file");
-            fState.setEntityId(a.getId());
-            fState.setParentId(pState.getId());
-            adapter.saveCFAState(fState);
-            pState.getChildrenIds().add(fState.getId());
+	private CFAState getProjectCFAState(ObjectId commitId) {
+		CFAState pState = adapter.getCFAStateForEntity(commitId);
+        if (pState == null) {
+        	pState = new CFAState();
+        	pState.setType("project");
+        	pState.setEntityId(commitId);
+        	adapter.saveCFAState(pState);
         }
+		return pState;
+	}
+
+	private void processFileLevel(FileAction a, List<Hunk> hunks) {
+        CFAState fState = getFileCFAState(a);
 
         for (Hunk h : hunks) {
 			for (HunkBlameLine hbl : adapter.getHunkBlameLines(h)) {
@@ -170,11 +167,25 @@ public class CafeGraphApp {
 	    		//TODO: consider implementing option based on file actions only
 	    		File f = adapter.getFile(hbl.getSourcePath());
 				FileAction cAction = adapter.getAction(hbl.getBlamedCommitId(), f.getId());
-				CFAState fCause = adapter.getCFAStateForEntity(cAction.getId());
+				CFAState fCause = getFileCFAState(cAction);
 				fState.getFixesIds().add(fCause.getId());
 				fCause.getCausesIds().add(fState.getId());
 	    	}
         }
+	}
+
+	private CFAState getFileCFAState(FileAction a) {
+		CFAState fState = adapter.getCFAStateForEntity(a.getId());
+        if (fState == null) {
+        	CFAState pState = getProjectCFAState(a.getCommitId());
+        	fState = new CFAState();
+            fState.setType("file");
+            fState.setEntityId(a.getId());
+            fState.setParentId(pState.getId());
+            adapter.saveCFAState(fState);
+            pState.getChildrenIds().add(fState.getId());
+        }
+		return fState;
 	}
 	
 	private void processLogicalLevel(FileAction a, List<Hunk> hunks) {
@@ -246,16 +257,7 @@ public class CafeGraphApp {
 			return;
 		}
 		
-        CFAState lState = adapter.getCFAStateForEntity(s.getId());
-        if (lState == null) {
-        	CFAState fState = adapter.getCFAStateForEntity(a.getId());
-        	lState = new CFAState();
-            lState.setType("method");
-            lState.setEntityId(s.getId());
-            lState.setParentId(fState.getId());
-            adapter.saveCFAState(lState);
-            fState.getChildrenIds().add(lState.getId());
-        }
+        CFAState lState = getLogicalCFAState(s, a);
         
 		for (Hunk h : hitHunks) {
 			LinkedHashMap<Integer,Integer> hunkLineMap = hsh.getHunkLineMap(h);
@@ -273,7 +275,7 @@ public class CafeGraphApp {
 	            			+" "+cState.getLongName()
 	            			+" @ "+adapter.getCommit(hbl.getBlamedCommitId()).getRevisionHash().substring(0,8));
 
-	            	CFAState lCause = adapter.getCFAStateForEntity(cState.getId());
+	            	CFAState lCause = getLogicalCFAState(cState, a);
 					//TODO: separate concern: why are hunkblames not compressed?!
 					//TODO: investigate why lCause is null for 
 					//safe at 67a4b6ec5dfd7f39f12de41789e840c9dc4c3b44
@@ -310,6 +312,20 @@ public class CafeGraphApp {
 	            }
 			}
 		}
+	}
+
+	private CFAState getLogicalCFAState(CodeEntityState s, FileAction a) {
+		CFAState lState = adapter.getCFAStateForEntity(s.getId());
+        if (lState == null) {
+        	CFAState fState = getFileCFAState(a);
+        	lState = new CFAState();
+            lState.setType("method");
+            lState.setEntityId(s.getId());
+            lState.setParentId(fState.getId());
+            adapter.saveCFAState(lState);
+            fState.getChildrenIds().add(lState.getId());
+        }
+		return lState;
 	}
 
 	private List<CodeEntityState> getCausingStatesLocal(HunkBlameLine hbl) {
