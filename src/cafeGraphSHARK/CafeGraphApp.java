@@ -178,6 +178,9 @@ public class CafeGraphApp {
 	}
 	
 	private void processLogicalLevel(FileAction a, List<Hunk> hunks) {
+		if (CafeGraphParameter.getInstance().isSkipLogical()) {
+			return;
+		}
 		//NOTE: it goes across method and file boundaries
 		//      -> causes may be in a different artifact state 
 

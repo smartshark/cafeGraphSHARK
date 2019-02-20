@@ -13,6 +13,7 @@ public class CafeGraphParameter extends Parameter {
 	// optional
 	private String commit;
 	private boolean processMerges;
+	private boolean skipLogical;
 	
 	public static synchronized CafeGraphParameter getInstance() {
 		if (instance == null) {
@@ -30,6 +31,7 @@ public class CafeGraphParameter extends Parameter {
 		commit = cmd.getOptionValue("r");
 		url = cmd.getOptionValue("u");
 		processMerges = cmd.hasOption("M");
+		skipLogical = cmd.hasOption("sl");
 	}
 	
 	@Override
@@ -62,4 +64,8 @@ public class CafeGraphParameter extends Parameter {
 		return processMerges;
 	}
 
+	public boolean isSkipLogical() {
+	    checkIfInitialised();
+		return skipLogical;
+	}
 }
