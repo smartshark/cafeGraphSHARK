@@ -65,7 +65,6 @@ public class CafeGraphApp {
 		}
 	}
 
-	
 	public void processRepository() {
 		List<Commit> commits = adapter.getCommits();
 		int i = 0;
@@ -74,7 +73,6 @@ public class CafeGraphApp {
 			i++;
 			logger.info("Processing: "+i+"/"+size);
 			processCommit(commit);
-//			if (i == 20) break;
 		}
 	}
 	
@@ -98,28 +96,11 @@ public class CafeGraphApp {
         //deal with merges
         //  -> skip altogether?
         //     hunks and actions are effectively duplicated for merged commits
-
         if (CafeGraphParameter.getInstance().isProcessMerges() || commit.getParents().size()<2) {
 
 	        for (FileAction a : actions) {
-	        	//check for special cases: mode A, R, D, etc.?
-	        	//TODO: if rename action -> use old file name?
-	        	if (a.getMode().equals("A")) {
-	        		//skip newly added
-	        		//continue;
-	        	}
-	            
 	            List<Hunk> hunks = adapter.getHunks(a);
 	            
-	            //-> double check off-by-one (0-based or 1-based)
-	            //  -> [old|new]StartLine is 0-based when [old|new]Lines = 0
-	            //     - hunk removed or added
-	            //     - only affects the corresponding side [old|new]
-	            //  -> [old|new]StartLine is 1-based when [old|new]Lines > 0
-	            //     - hunk modified
-	            //-> make sure it is consistent for old and new
-	            //  -> interpolate as necessary
-	
 	            //hunk interpolation (not saved)
 	            adapter.interpolateHunks(hunks);
 	            
@@ -276,10 +257,7 @@ public class CafeGraphApp {
 	            			+" @ "+adapter.getCommit(hbl.getBlamedCommitId()).getRevisionHash().substring(0,8));
 
 	            	CFAState lCause = getLogicalCFAState(cState, a);
-					//TODO: separate concern: why are hunkblames not compressed?!
-					//TODO: investigate why lCause is null for 
-					//safe at 67a4b6ec5dfd7f39f12de41789e840c9dc4c3b44
-					//TODO: a more adequate handling of compresion is needed
+					//TODO: a more adequate handling of compression is needed
 					//      otherwise for hunks spanning big blocks it gets messy
 					//      -> also refine selection of candidate states 
 					//         (include b.start < s.start AND b.end > s.end)
