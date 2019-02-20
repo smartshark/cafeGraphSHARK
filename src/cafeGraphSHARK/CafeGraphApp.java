@@ -53,6 +53,10 @@ public class CafeGraphApp {
 		adapter.setPluginName("cafeGraphSHARK");
 		adapter.setRecordProgress(CafeGraphParameter.getInstance().isRecordProgress());
 		targetstore = adapter.getTargetstore();
+		String name = CafeGraphParameter.getInstance().getUrl().substring(CafeGraphParameter.getInstance().getUrl().lastIndexOf("/")+1).replaceAll("\\.git", "");
+		if (CafeGraphParameter.getInstance().isSeparateDatabase()) {
+			targetstore = adapter.getTargetstore("localhost", 27017, "localSHARK-"+name);
+		}
 		adapter.setVcs(CafeGraphParameter.getInstance().getUrl());
 		if (adapter.getVcs()==null) {
 			logger.error("No VCS information found for "+CafeGraphParameter.getInstance().getUrl());
