@@ -56,7 +56,7 @@ public class CafeGraphApp {
 		targetstore = adapter.getTargetstore();
 		String name = CafeGraphParameter.getInstance().getUrl().substring(CafeGraphParameter.getInstance().getUrl().lastIndexOf("/")+1).replaceAll("\\.git", "");
 		if (CafeGraphParameter.getInstance().isSeparateDatabase()) {
-			targetstore = adapter.getTargetstore("localhost", 27017, "localSHARK-"+name);
+			targetstore = adapter.getTargetstore("localhost", 27017, CafeGraphParameter.getInstance().getPrefix()+"localSHARK-"+name);
 		}
 		adapter.setVcs(CafeGraphParameter.getInstance().getUrl());
 		if (adapter.getVcs()==null) {
